@@ -1,6 +1,7 @@
 # 1DF52IA8gCFRbRzVYivUbnrkpe2SeMPHbk6pEmuNM-Q0
 
-
+# Now we can track a specific column in the Google Sheet for changes.
+# This script will check for changes in Column C of the specified Google Sheet every 10 seconds.
 import time
 import pickle
 import os
