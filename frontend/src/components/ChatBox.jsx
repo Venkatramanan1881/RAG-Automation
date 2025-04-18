@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ChatBox.css';
 import uploadSvg from '../assets/upload.svg';
 import sendBtnSvg from '../assets/send-btn.svg';
@@ -7,8 +7,16 @@ import audioBtnSvg from '../assets/audio-btn.svg';
 function ChatBox() {
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
+  const chatHistoryRef = useRef(null);
+
+  useEffect(() => {
+    if (chatHistoryRef.current) {
+      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   const handleSendMessage = async () => {
+    setMessage('');
     if (message.trim() === '') return;
 
     const userMessage = { sender: 'user', text: message };
@@ -53,7 +61,7 @@ function ChatBox() {
 
   return (
     <div className="chatbox-container">
-      <div className="chatbox-history">
+      <div className="chatbox-history" ref={chatHistoryRef}>
         {chatHistory.map((msg, index) => (
           <div key={index} className={`message-wrapper ${msg.sender}`}>
             <div className="message-bubble">{msg.text}</div>
@@ -61,7 +69,7 @@ function ChatBox() {
         ))}
       </div>
       <div className="chatbox-input-area">
-        <img src={uploadSvg} alt="Upload" className="upload-button" />
+        
         <input
           type="text"
           value={message}

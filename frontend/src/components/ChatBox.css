@@ -1,127 +1,97 @@
-/* General Chatbox Container */
 .chatbox-container {
-    width: 500px;
-    height: 600px;
-    background-color: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    margin: 40px auto;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  /* Message History Area */
-  .chatbox-history {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  /* Message Wrapper */
-  .message-wrapper {
-    display: flex;
-    width: 100%;
-  }
-  
-  /* Align user and AI messages */
-  /* .message-wrapper.user {
-    justify-content: flex-end;
-    /* margin: 5px 0; 
-  } */
-  
-  .message-wrapper.ai {
-    justify-content: flex-start;
-    margin: 5px 0;
-  }
-  
-  /* Base Message Bubble */
-  .message-bubble {
-    padding: 12px 18px;
-    border-radius: 18px;
-    max-width: 70%;
-    font-size: 15px;
-    line-height: 1.4;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-  }
-  
-  /* AI Bubble Style */
-  .message-wrapper.ai .message-bubble {
-    background-color: #f0f0f0;
-    color: #333;
-    border-bottom-left-radius: 4px;
-  }
-  
-  /* User Bubble Style */
-  /* .message-wrapper.user .message-bubble {
-    background-color: #dcf8c6; /* WhatsApp-style green 
-    color: #000;
-    border-bottom-right-radius: 4px;
-  } */
-  
-  /* Chat Input Area */
-  .chatbox-input-area {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #ffffff;
-    border-top: 1px solid #eee;
-    margin: 10px;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-  }
-  
-  /* Input Field */
-  .chatbox-input {
-    flex-grow: 1;
-    border: none;
-    outline: none;
-    padding: 12px 0;
-    font-size: 1rem;
-    background-color: transparent;
-    margin: 0 10px;
-  }
-  
-  .chatbox-input::placeholder {
-    color: #aaa;
-  }
-  
-  /* Icon Buttons */
-  .icon-button {
-    background: none;
-    border: none;
-    padding: 8px;
-    margin: 0 8px;
-    cursor: pointer;
-    font-size: 1.3rem;
-    color: #888;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    transition: background-color 0.2s ease;
-  }
-  
-  .icon-button:hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* Upload and Send Button */
-  .upload-button, .send-button, .audio-button {
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  max-height: 80vh;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 20px;
+
+  /* Centering in viewport */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+
+.chatbox-history {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+  max-height: 100%;
+
+}
+
+.chatbox-history::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome, Safari */
+}
+
+.message-wrapper {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.message-bubble {
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 70%;
+}
+
+.user .message-bubble {
+  background-color: #c8f7c5;
+  color: #000;
+  align-self: flex-end;
+}
+
+.ai .message-bubble {
+  background-color: #f0f0f0;
+  color: #000;
+  align-self: flex-start;
+}
+
+.chatbox-input-area {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px;
+}
+
+.chatbox-input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  padding: 10px;
+  font-size: 16px;
+  color: #000;
+}
+
+.chatbox-input:focus {
+  outline: none;
+}
+
+.send-button, .audio-button {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+
+.user{
+  justify-content: flex-end;
+}
+
+.ai{
+  justify-content: flex-start;
+}
