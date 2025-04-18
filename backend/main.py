@@ -1,18 +1,17 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from google import genai
 import os
 from dotenv import load_dotenv
+import drive_upload
 
 load_dotenv()
 
-# Initialize Gemini client
-client = genai.Client(api_key="AIzaSyBA0FSAKYF_OZWP6NhNDLzk4QaDCPCGZ9M")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = FastAPI()
 
-# Allow frontend dev server
 origins = ["http://localhost:5173"]
 
 app.add_middleware(
@@ -27,30 +26,63 @@ app.add_middleware(
 async def chat_with_gemini(request: Request):
     data = await request.json()
     user_input = data.get("message")
-    print(f"User input: {user_input}")
 
     if not user_input:
         return JSONResponse(status_code=400, content={"error": "Message is required"})
 
     try:
-        # Send user input to Gemini model
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             contents=user_input
         )
-
-        # 🧠 Extract the actual text reply from the response object
         gemini_reply = (
-            response.candidates[0]
-            .content.parts[0]
-            .text.strip()
+            response.candidates[0].content.parts[0].text.strip()
             if response.candidates and response.candidates[0].content.parts
             else "No reply from Gemini"
         )
-
-        print(f"Gemini Reply: {gemini_reply}")
         return {"response": gemini_reply}
 
     except Exception as e:
-        print(f"Error: {e}")
+        return JSONResponse(status_code=500, content={"error": f"Internal Server Error: {str(e)}"})
+
+
+@app.post("/upload")
+async def upload_file(
+    file: UploadFile = File(...),
+    upload_dir: str = Form(...)
+):
+    try:
+        os.makedirs(upload_dir, exist_ok=True)
+        filename = file.filename
+        file_path = os.path.join(upload_dir, filename)
+
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+
+        # Folder mapping based on extension
+        folder_map = {
+            ".pdf": "1t6L_RwykbMY7fIBCcjSGws0i_b3B2YFy",
+            ".jpg": "1ZZ1Vs2Gc6pZFzQse7coY8KB4zNU5KgHU",
+            ".jpeg": "1ZZ1Vs2Gc6pZFzQse7coY8KB4zNU5KgHU",
+            ".png": "1ZZ1Vs2Gc6pZFzQse7coY8KB4zNU5KgHU",
+            ".gif": "1ZZ1Vs2Gc6pZFzQse7coY8KB4zNU5KgHU"
+        }
+
+        try:
+            success = drive_upload.upload_to_drive(filename, file_path, folder_map)
+
+            if success:
+                drive_upload.delete_local_file(file_path)
+                return {"filename": filename, "message": "Uploaded to Drive and deleted locally"}
+            else:
+                return JSONResponse(status_code=500, content={"error": "Failed to upload to Drive"})
+        except Exception as e:
+            print(f"Drive upload error: {str(e)}")
+            return JSONResponse(status_code=500, content={"error": f"Drive upload error: {str(e)}"})
+
+    except OSError as e:
+        print(f"File system error: {str(e)}")
+        return JSONResponse(status_code=500, content={"error": f"File system error: {str(e)}"})
+    except Exception as e:
+        print(f"Internal Server Error: {str(e)}")
         return JSONResponse(status_code=500, content={"error": f"Internal Server Error: {str(e)}"})
